@@ -1,4 +1,6 @@
 /.vs
+/Debug
+*.json
 
 # Prerequisites
 *.d

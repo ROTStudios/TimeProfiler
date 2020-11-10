@@ -15,9 +15,9 @@ To vizualise the data you collected, just go to a chromium-based browser (Chrome
 
 Instanciating all those objects can add a lot of overhead in your program, so we the want it to profiller at all run. To control it we can use macros.
 
-You are more than welcomed to write your own macros, but at the end of the ROTProfiller.h file you can find some macros for your use. Just copy to the beggining of your main.cpp file. Start with <code>ROTPROFILLERSTART(x)</code> passing a string for the filepath of the JSON file. End with the end of the scope or when <code>ROTPROFILLEREND</code> is called. You can use <code>ROTPROFILLERFUNCION</code> at the beggining of a function and it will use a funcion name as the identification parameter, for specific scopes use <code>ROTPROFILERNAMED(x)</code> passing a string with a identification. They will end at the end of the scope.
+Start the Logger with <code>ROTPROFILLERSTART(x)</code> passing a string for the filepath of the JSON file. End with the end of the scope or when <code>ROTPROFILLEREND</code> is called. You can use <code>ROTPROFILLERFUNCION</code> at the beggining of a function and it will use a funcion name as the identificatioan parameter, for specific scopes use <code>ROTPROFILERNAMED(x)</code> passing a string with a identification. They will end at the end of the scope.
 
-To activate the Profiler, write  <code>#define ROTPROFILLERTOOL</code> in the first line of your main file (before the preprocessor statments). To deactivate, just remove and all the macros will resolve to nothing at compile time.
+To activate the Profiler, write  <code>#define ROTPROFILLERTOOL</code> before including the ROTProfiller.h. To deactivate, just remove and all the macros will resolve to nothing at compile time.
 
 
 ## --------- KNOWN ISSUES ---------

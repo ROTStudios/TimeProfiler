@@ -141,8 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Header.h" />
-    <ClInclude Include="timer.h" />
+    <ClInclude Include="ROTProfiller.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp" />

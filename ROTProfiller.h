@@ -20,7 +20,7 @@ namespace rot
 	public:
 		EventLogger(std::string Filepath);
 		~EventLogger();
-		EventLogger* Get();
+		void EndSession();
 		void RecordTimer(const TimerAtributes& TimerInfo);
 
 	private:
@@ -41,19 +41,19 @@ namespace rot
 
 	EventLogger::~EventLogger()
 	{
+		EndSession();
+	}
+
+	void EventLogger::EndSession()
+	{
 		if (m_File)
 		{
 			m_File << "]}";
 			m_File.flush();
+			m_File.close();
 		}
-		m_File.close();
-	}
-
-	EventLogger* EventLogger::Get()
-	{
-		static EventLogger* Instance = this;
-		return Instance;
-	}
+		
+	}	
 
 	void EventLogger::RecordTimer(const TimerAtributes& TimerInfo)
 	{
@@ -82,7 +82,7 @@ namespace rot
 	class Timer
 	{
 	public:
-		Timer(EventLogger* LoggerInstace, const std::string& Name, const std::string& Category);
+		Timer(const std::string& Name, const std::string& Category, EventLogger* LoggerInstace);
 		~Timer();
 
 	private:		
@@ -90,7 +90,7 @@ namespace rot
 		TimerAtributes TimerInfo;
 	};
 
-	Timer::Timer(EventLogger* LoggerInstace, const std::string& Name, const std::string& Category)
+	Timer::Timer(const std::string& Name, const std::string& Category, EventLogger* LoggerInstace)
 	{
 		m_LoggerInstance = LoggerInstace;
 		TimerInfo.Name = Name;
@@ -107,10 +107,19 @@ namespace rot
 
 }
 
+
+//PREPROCESSOR STATMENTS FOR MACRO USE. JUST COPY AT THE START OF YOU MAIN FILE
+
 #ifdef ROTPROFILLERTOOL
 #define ROTPROFILLERSTART(x) rot::EventLogger EVLOG(x);
-#define ROTPROFILLERFUNCION rot::Timer pt(EVLOG.Get(), __func__ , "Category 1");
+#define ROTPROFILLEREND EVLOG.EndSession();
+#define ROTPROFILLERFUNCION rot::Timer pt(__func__ , "Category 1", &EVLOG);
+#define ROTPROFILERNAMED(x) rot::Timer pt(x , "Category 1", &EVLOG);
 #else
 #define ROTPROFILLERSTART(x) 
 #define ROTPROFILLERFUNCION
+#define ROTPROFILLEREND(x) 
+#define ROTPROFILERNAMED(x)
 #endif
+
+//END OF PREPROCESSOR STATMENTS

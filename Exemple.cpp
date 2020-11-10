@@ -1,17 +1,16 @@
-#include "Header.h"
+#include "ROTProfiller.h"
 #include <string>
 
-#define ROTPROFILLERTOOL
+
 
 int main()
 {	
-	ROTPROFILLERSTART("Teste11")
+	ROTPROFILLERSTART("START.json")
 	double a = 1;
 	uint64_t b = 0;
 
 
 	{
-		
 		ROTPROFILLERFUNCION
 
 		for (int i = 0; i < 1020; i++)
@@ -20,11 +19,12 @@ int main()
 			ROTPROFILLERFUNCION
 			for (int j = 0; j < 451; j++)			
 			{
-				ROTPROFILLERFUNCION
+				
 				b = b * j;				
 			}
 		}
 		
 	}
-		
+	
+	
 }

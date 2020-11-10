@@ -9,11 +9,13 @@ namespace rot
 	class ProfilerTimer
 	{
 	public:
-		ProfilerTimer(const char* File);
+		ProfilerTimer(const char* Name_ID, const char* Cat);
 		~ProfilerTimer();
 
-		void init(const char* Name_ID);
-		void stop(const char* Name_ID);
+		static void Setup();
+
+		void init();
+		void stop();
 
 		
 	private:
@@ -22,49 +24,46 @@ namespace rot
 		std::chrono::time_point<std::chrono::high_resolution_clock> m_End;
 
 		const char* m_Name;
-		const char* Filepath;
+		const char* m_Cat;
 
-		std::ofstream m_EventOutput;
+		static std::ofstream m_EventOutput;
 	};
 
-	ProfilerTimer::ProfilerTimer(const char* File)
+	ProfilerTimer::ProfilerTimer(const char* EventName, const char* Cat)
 	{
-		Filepath = File;
+		m_Name = EventName;
+		m_Cat = Cat;
+				
+		init();
+	}
 
-		m_EventOutput.open(Filepath, std::ios::out);
-		
+	ProfilerTimer::~ProfilerTimer()
+	{
+		stop();		
+
+	}
+	void ProfilerTimer::Setup()
+	{
+
 		if (m_EventOutput)
 		{
 			m_EventOutput << "{" << "\"traceEvents\": [";
 			m_EventOutput.flush();
 		}
-		init("TopTop");
 	}
-
-	ProfilerTimer::~ProfilerTimer()
+	void ProfilerTimer::init()
 	{
-		stop("TopTop");
-		if (m_EventOutput)
-		{
-			m_EventOutput << "], \n";
-			m_EventOutput << "\"displayTimeUnit\": "<< "\"ns\"}";
-			m_EventOutput.flush();
+		m_Start = std::chrono::high_resolution_clock::now();	
 
-			m_EventOutput.close();
-		}
-
-	}
-	void ProfilerTimer::init(const char* Name_ID)
-	{
-		m_Start = std::chrono::high_resolution_clock::now();
-		
 
 		
 		if (m_EventOutput)
-		{
+		{		
+		
+			m_EventOutput << ",";			
 			m_EventOutput << "{";
-			m_EventOutput << "\"name\":" << "\"" << Name_ID << "\"" << ",";
-			m_EventOutput << "\"cat\":" << "\"" << "TESTE" << "\"" << ",";
+			m_EventOutput << "\"name\":" << "\"" << m_Name << "\"" << ",";
+			m_EventOutput << "\"cat\":" << "\"" << m_Cat << "\"" << ",";
 			m_EventOutput << "\"ph\":" << "\"" << "B" << "\"" << ",";
 			m_EventOutput << "\"ts\":" << m_Start.time_since_epoch().count() / 1000 << ",";
 			m_EventOutput << "\"pid\":" << 0 << ",";
@@ -78,7 +77,7 @@ namespace rot
 
 	}
 
-	inline void ProfilerTimer::stop(const char* Name_ID)
+	void ProfilerTimer::stop()
 	{
 		m_End = std::chrono::high_resolution_clock::now();
 
@@ -86,8 +85,8 @@ namespace rot
 		{
 			m_EventOutput << ",";
 			m_EventOutput << "{";
-			m_EventOutput << "\"name\":" << "\"" << Name_ID << "\"" << ",";
-			m_EventOutput << "\"cat\":" << "\"" << "TESTE" << "\"" << ",";
+			m_EventOutput << "\"name\":" << "\"" << m_Name << "\"" << ",";
+			m_EventOutput << "\"cat\":" << "\"" << m_Cat << "\"" << ",";
 			m_EventOutput << "\"ph\":" << "\"" << "E" << "\"" << ",";
 			m_EventOutput << "\"ts\":" << m_End.time_since_epoch().count() / 1000 << ",";
 			m_EventOutput << "\"pid\":" << 0 << ",";
@@ -96,7 +95,9 @@ namespace rot
 			m_EventOutput << "}";
 
 			m_EventOutput.flush();
+			
 		}	
 
 	}
+	 
 }
